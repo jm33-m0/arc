@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -32,7 +31,7 @@ func securePath(basePath, relativePath string) (string, error) {
 
 // createDirWithPermissions creates a directory with specified permissions.
 func createDirWithPermissions(path string, mode os.FileMode) error {
-	log.Printf("Creating directory: %s", path)
+	logging("Creating directory: %s", path)
 	if err := os.MkdirAll(path, mode); err != nil {
 		return fmt.Errorf("mkdir: %w", err)
 	}
@@ -49,7 +48,7 @@ func setPermissions(path string, mode os.FileMode) error {
 
 // handleFile handles the extraction of a file from the archive.
 func handleFile(f archives.FileInfo, dst string) error {
-	log.Printf("Handling file: %s", f.NameInArchive)
+	logging("Handling file: %s", f.NameInArchive)
 
 	// Validate and construct the destination path
 	dstPath, pathErr := securePath(dst, f.NameInArchive)
@@ -69,13 +68,13 @@ func handleFile(f archives.FileInfo, dst string) error {
 		if dirErr := createDirWithPermissions(dstPath, f.Mode()); dirErr != nil {
 			return fmt.Errorf("creating directory: %w", dirErr)
 		}
-		log.Printf("Successfully created directory: %s", dstPath)
+		logging("Successfully created directory: %s", dstPath)
 		return nil
 	}
 
 	// Ignore symlinks (or hardlinks)
 	if f.LinkTarget != "" {
-		log.Printf("Skipping symlink: %s -> %s", dstPath, f.LinkTarget)
+		logging("Skipping symlink: %s -> %s", dstPath, f.LinkTarget)
 		return nil
 	}
 
@@ -87,14 +86,14 @@ func handleFile(f archives.FileInfo, dst string) error {
 
 	// If parent directory is read-only, temporarily make it writable
 	if originalMode.Mode().Perm()&0o200 == 0 {
-		log.Printf("Parent directory is read-only, temporarily making it writable: %s", parentDir)
+		logging("Parent directory is read-only, temporarily making it writable: %s", parentDir)
 		if chmodErr := os.Chmod(parentDir, originalMode.Mode()|0o200); chmodErr != nil {
 			return fmt.Errorf("chmod parent directory: %w", chmodErr)
 		}
 		defer func() {
 			// Restore the original permissions after writing
 			if chmodErr := os.Chmod(parentDir, originalMode.Mode()); chmodErr != nil {
-				log.Printf("Failed to restore original permissions for %s: %v", parentDir, chmodErr)
+				logging("Failed to restore original permissions for %s: %v", parentDir, chmodErr)
 			}
 		}()
 	}
@@ -115,13 +114,13 @@ func handleFile(f archives.FileInfo, dst string) error {
 	if _, copyErr := io.Copy(dstFile, reader); copyErr != nil {
 		return fmt.Errorf("copy: %w", copyErr)
 	}
-	log.Printf("Successfully extracted file: %s", dstPath)
+	logging("Successfully extracted file: %s", dstPath)
 	return nil
 }
 
 // Unarchive unarchives a tarball to a directory, symlinks and hardlinks are ignored.
 func Unarchive(tarball, dst string) error {
-	log.Printf("Unarchiving %s to %s", tarball, dst)
+	logging("Unarchiving %s to %s", tarball, dst)
 	archiveFile, openErr := os.Open(tarball)
 	if openErr != nil {
 		return fmt.Errorf("open tarball %s: %w", tarball, openErr)
@@ -150,6 +149,6 @@ func Unarchive(tarball, dst string) error {
 		return fmt.Errorf("extracting files: %w", extractErr)
 	}
 
-	log.Printf("Unarchiving completed successfully.")
+	logging("Unarchiving completed successfully.")
 	return nil
 }

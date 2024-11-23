@@ -22,8 +22,16 @@ func main() {
 	// Flag for specifying the archive file (for both create and extract)
 	archiveFile := flag.String("f", "", "Archive file (for creating or extracting)")
 
+	// Enable verbose mode
+	verboseFlag := flag.Bool("v", false, "Verbose mode")
+
 	// Parse command line flags
 	flag.Parse()
+
+	// Enable verbose mode if -v is set
+	if *verboseFlag {
+		arc.DEBUG = true
+	}
 
 	// Remaining arguments (source and destination)
 	args := flag.Args()
