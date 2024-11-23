@@ -32,6 +32,7 @@ func securePath(basePath, relativePath string) (string, error) {
 
 // createDirWithPermissions creates a directory with specified permissions.
 func createDirWithPermissions(path string, mode os.FileMode) error {
+	log.Printf("Creating directory: %s", path)
 	if err := os.MkdirAll(path, mode); err != nil {
 		return fmt.Errorf("mkdir: %w", err)
 	}
@@ -72,16 +73,9 @@ func handleFile(f archives.FileInfo, dst string) error {
 		return nil
 	}
 
-	// Handle symlinks
+	// Ignore symlinks (or hardlinks)
 	if f.LinkTarget != "" {
-		targetPath, linkErr := securePath(dst, f.LinkTarget)
-		if linkErr != nil {
-			return fmt.Errorf("invalid symlink target: %w", linkErr)
-		}
-		if linkErr := os.Symlink(targetPath, dstPath); linkErr != nil {
-			return fmt.Errorf("create symlink: %w", linkErr)
-		}
-		log.Printf("Successfully created symlink: %s -> %s", dstPath, targetPath)
+		log.Printf("Skipping symlink: %s -> %s", dstPath, f.LinkTarget)
 		return nil
 	}
 
@@ -125,7 +119,7 @@ func handleFile(f archives.FileInfo, dst string) error {
 	return nil
 }
 
-// Unarchive unarchives a tarball to a directory using the official extraction method.
+// Unarchive unarchives a tarball to a directory, symlinks and hardlinks are ignored.
 func Unarchive(tarball, dst string) error {
 	archiveFile, openErr := os.Open(tarball)
 	if openErr != nil {
@@ -146,7 +140,6 @@ func Unarchive(tarball, dst string) error {
 	if dirErr := createDirWithPermissions(dst, dirPermissions); dirErr != nil {
 		return fmt.Errorf("creating destination directory: %w", dirErr)
 	}
-	log.Printf("Destination directory created or already exists: %s", dst)
 
 	handler := func(ctx context.Context, f archives.FileInfo) error {
 		return handleFile(f, dst)
