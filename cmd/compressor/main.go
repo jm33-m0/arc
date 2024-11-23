@@ -15,13 +15,9 @@ func main() {
 	compressionType := flag.String("t", "xz", "Compression type (e.g., bz2, gz, xz, zst, lz4, br)")
 	flag.Parse()
 
-	if len(os.Args) == 1 {
+	if *file == "" || *output == "" || *compressionType == "" {
 		flag.Usage()
 		return
-	}
-
-	if *file == "" || *output == "" {
-		log.Fatal("Both --file and --output must be specified")
 	}
 
 	compression, ok := arc.CompressionMap[strings.ToLower(*compressionType)]
