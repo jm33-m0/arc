@@ -121,6 +121,7 @@ func handleFile(f archives.FileInfo, dst string) error {
 
 // Unarchive unarchives a tarball to a directory, symlinks and hardlinks are ignored.
 func Unarchive(tarball, dst string) error {
+	log.Printf("Unarchiving %s to %s", tarball, dst)
 	archiveFile, openErr := os.Open(tarball)
 	if openErr != nil {
 		return fmt.Errorf("open tarball %s: %w", tarball, openErr)

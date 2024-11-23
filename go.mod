@@ -2,6 +2,8 @@ module github.com/jm33-m0/arc
 
 go 1.23.3
 
+require github.com/mholt/archives v0.0.0-20241123043835-f28756b8d6c7
+
 require (
 	github.com/STARRY-S/zip v0.2.1 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
@@ -14,7 +16,6 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
-	github.com/mholt/archives v0.0.0-20241121231447-a7daedac0a9e // indirect
 	github.com/nwaples/rardecode/v2 v2.0.0-beta.4.0.20241112120701-034e449c6e78 // indirect
 	github.com/pierrec/lz4/v4 v4.1.21 // indirect
 	github.com/sorairolake/lzip-go v0.3.5 // indirect
