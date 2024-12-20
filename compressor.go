@@ -12,18 +12,21 @@ import (
 func Compress(data []byte, compression archives.Compression) ([]byte, error) {
 	var compressedBuf bytes.Buffer
 
-	// Wrap the buffer with a BZ2 compressor
+	// Wrap the buffer with a compressor
 	compressor, err := compression.OpenWriter(&compressedBuf)
 	if err != nil {
-		return nil, fmt.Errorf("CompressBZ2: Failed to create BZ2 compressor: %w", err)
+		return nil, fmt.Errorf("Compress: Failed to create compressor: %w", err)
 	}
 	defer compressor.Close()
 
-	// Write data to the compressor
+	// Writes to compressor will be compressed
 	_, err = compressor.Write(data)
 	if err != nil {
-		return nil, fmt.Errorf("CompressBZ2: Write to compressor failed: %w", err)
+		return nil, fmt.Errorf("Compress: Write to compressor failed: %w", err)
 	}
+
+	// without this line, the compressed data will be incomplete
+	compressor.Close()
 
 	return compressedBuf.Bytes(), nil
 }
