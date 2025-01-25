@@ -2,7 +2,7 @@ module github.com/jm33-m0/arc
 
 go 1.23.3
 
-require github.com/mholt/archives v0.0.0-20241216060121-23e0af8fe73d
+require github.com/mholt/archives v0.1.0
 
 require (
 	github.com/STARRY-S/zip v0.2.1 // indirect
