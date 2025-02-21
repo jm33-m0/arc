@@ -11,6 +11,7 @@ import (
 // Compress compresses input data using specified compressor.
 func Compress(data []byte, compression archives.Compression) ([]byte, error) {
 	var compressedBuf bytes.Buffer
+	logging("Compressing data using %s", compression.Extension())
 
 	// Wrap the buffer with a compressor
 	compressor, err := compression.OpenWriter(&compressedBuf)

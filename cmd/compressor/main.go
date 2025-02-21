@@ -13,7 +13,7 @@ func main() {
 	to_compress := flag.String("c", "", "File to compress")
 	to_decompress := flag.String("f", "", "Compressed file to decompress")
 	output := flag.String("o", "", "Output file")
-	compressionType := flag.String("t", "xz", "Compression type (e.g., bz2, gz, xz, zst, lz4, br)")
+	compressionType := flag.String("t", "", "Compression type (e.g., bz2, gz, xz, zst, lz4, br)")
 	flag.Parse()
 
 	if *output == "" || *compressionType == "" {
@@ -47,7 +47,7 @@ func main() {
 		}
 	} else if *to_compress != "" {
 		// out, err = arc.Compress(data, compression)
-		out, err = arc.CompressXz(data)
+		out, err = arc.Compress(data, compression)
 		if err != nil {
 			log.Fatalf("Error compressing file %s: %v", file, err)
 		}
