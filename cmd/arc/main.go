@@ -22,6 +22,10 @@ func main() {
 	// Flag for specifying the archive file (for both create and extract)
 	archiveFile := flag.String("f", "", "Archive file (for creating or extracting)")
 
+	// Flags for include and exclude filters
+	includeFilter := flag.String("include", "", "Include filter (regex pattern)")
+	excludeFilter := flag.String("exclude", "", "Exclude filter (regex pattern)")
+
 	// Enable verbose mode
 	verboseFlag := flag.Bool("v", false, "Verbose mode")
 
@@ -76,7 +80,24 @@ func main() {
 			log.Fatalf("Unsupported archival type: %s", *archivalType)
 		}
 
-		err := arc.Archive(source, *archiveFile, compression, archival)
+		var filter func(string) bool
+		var err error
+		if *includeFilter != "" {
+			filter, err = arc.IncludeFilesFilter(strings.Split(*includeFilter, ","))
+		} else if *excludeFilter != "" {
+			filter, err = arc.ExcludeFilesFilter(strings.Split(*excludeFilter, ","))
+		}
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if filter != nil {
+			err = arc.ArchiveWithFilter(source, *archiveFile, compression, archival, filter)
+		} else {
+			err = arc.Archive(source, *archiveFile, compression, archival)
+		}
+
 		if err != nil {
 			log.Fatal(err)
 		}
