@@ -17,6 +17,9 @@ func main() {
 	compressCommand := flag.NewFlagSet("compress", flag.ExitOnError)
 	decompressCommand := flag.NewFlagSet("decompress", flag.ExitOnError)
 
+	// Set custom usage function to show our help message
+	flag.Usage = printUsage
+
 	// Global flags
 	verboseFlag := flag.Bool("v", false, "Verbose mode")
 	flag.Parse()
