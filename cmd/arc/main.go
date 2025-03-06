@@ -70,7 +70,7 @@ func handleArchive(cmd *flag.FlagSet, args []string) {
 	excludeFilter := cmd.String("exclude", "", "Exclude filter (regex pattern)")
 	// New flags for ZIP compression
 	compressionLevel := cmd.Int("level", 6, "ZIP compression level (0-9, 0=none, 9=best)")
-	compressionMethod := cmd.Int("method", 8, "ZIP compression method (0=store, 8=deflate)")
+	compressionMethod := cmd.Int("method", 8, "ZIP compression method, see https://github.com/mholt/archives/blob/main/zip.go")
 
 	cmd.Usage = func() {
 		fmt.Println("Usage: arc archive [options] <source_directory>")
