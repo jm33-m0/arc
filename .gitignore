@@ -2,10 +2,9 @@
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
 # Ignore arc binary
-/arc
-/cmd/arc/arc
-/cmd/compressor/compressor
-/test/arc
+/v2/arc
+/v2/cmd/arc/arc
+/v2/test/arc
 
 # Binaries for programs and plugins
 *.exe
