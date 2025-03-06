@@ -1,4 +1,4 @@
-module github.com/jm33-m0/arc
+module github.com/jm33-m0/arc/v2
 
 go 1.23.3
 
